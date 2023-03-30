@@ -1,0 +1,182 @@
+{% load static %}
+<!-- <style>
+@media only screen and (max-width: 768px) {
+    .main-logo {
+   display: none;
+    }
+    }
+</style>
+
+<div class="header navbar">
+    <div class="header-container">
+        <div class="nav-logo">
+            <a href="#">
+                <img src="{% static 'assets/img/tra.png' %}" width="70px",alt="Travolt"
+                    class="main-logo">
+                
+            </a>
+        </div>
+        <ul class="nav-left">
+           <li>
+                <a class="sidenav-fold-toggler" href="javascript:void(0);">
+                    <i class="mdi mdi-menu"></i>
+                </a>
+                <a class="sidenav-expand-toggler" href="javascript:void(0);">
+                    <i class="mdi mdi-menu"></i>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav-right">
+
+            <li class="user-profile dropdown dropdown-animated scale-left">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                    <img class="profile-img img-fluid" src="{% static 'assets2/images/avatars/thumb-13.jpg' %}" alt="">
+                </a>
+                <ul class="dropdown-menu dropdown-md p-v-0">
+                    {% if request.user.is_authenticated %}
+                    <li>
+                        <ul class="list-media">
+                            <li class="list-item p-15">
+                                <div class="media-img">
+                                    <img src="{% static 'assets2/images/avatars/thumb-13.jpg' %}" alt="">
+                                </div>
+                                
+                                <div class="info">
+                                    <span class="title text-bold" style="font-size: large;">{{request.user.first_name}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="/viewprofile/{{user.id}}">
+                            <i class="ti-user p-r-10"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href={% url 'logout' %}>
+                            <i class="ti-power-off p-r-10"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    </div>
+</div> -->
+
+
+
+
+    <!-- Navigation Bar-->
+    <header id="topnav">
+        <div class="topbar-main" style="background-color:#fa7070">
+            <div class="container-fluid">
+
+                <!-- Logo-->
+                <div>
+                    <a href="index.html" class="logo">
+                         <img src="assets/images/logo-light.png" class="logo-lg" alt="" height="26">
+                        <img src="assets/images/logo-sm.png" class="logo-sm" alt="" height="28">
+                    </a>
+                </div>
+                <!-- End Logo-->
+
+                <div class="menu-extras topbar-custom navbar p-0">
+
+                    <ul class="mb-0 nav navbar-right ml-auto list-inline">
+                        <li class="dropdown">
+                            {% if request.user.is_authenticated %}
+                            <a href="" class="dropdown-toggle profile waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
+                                <!-- <img src="assets/images/users/avatar-1.jpg" alt="user-img" class="rounded-circle"> -->
+                                <span class="profile-username">
+                                    {{request.user.first_name}} <span class="mdi mdi-chevron-down font-15"></span>
+                                </span>
+                            </a>
+                            {% endif %}
+                            <ul class="dropdown-menu">
+                                <li><a href="/viewprofile/{{user.id}}" class="dropdown-item"> Profile</a></li>
+                                <li><a href={% url 'logout' %} class="dropdown-item"> Logout</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="menu-item dropdown notification-list list-inline-item">
+                            <!-- Mobile menu toggle-->
+                            <a class="navbar-toggle nav-link">
+                                <div class="lines">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </a>
+                            <!-- End mobile menu toggle-->
+                        </li>
+
+                    </ul>
+
+                </div>
+                <!-- end menu-extras -->
+
+                <div class="clearfix"></div>
+
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end topbar-main -->
+
+        <!-- MENU Start -->
+        <div class="navbar-custom">
+            <div class="container-fluid">
+
+                <div id="navigation">
+
+                    <!-- Navigation Menu-->
+                    <ul class="navigation-menu">
+
+                        <li class="has-submenu">
+                            <a href={% url 'dashboard' %}><i class="ti-home"></i> Dashboard</a>
+                        </li>
+                        <li class="has-submenu">
+                            <a href={% url 'leads' %}><i class="ti-folder"></i> Leads</a>
+                        </li>
+                        <li class="has-submenu">
+                            <a href={% url 'user' %}><i class="ti-user"></i> Users</a>
+                        </li>
+
+                        <li class="has-submenu">
+                            <a ><i class="ti-briefcase"></i> Contact <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                            <ul class="submenu megamenu">
+                                <li>
+                                    <ul>
+                                        <li><a href={% url 'customer' %}>Customer</a></li>
+                                        <li><a href={% url 'supplier' %}>Supplier</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="has-submenu">
+                            <a><i class="ti-harddrives"></i> Manage <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                            <ul class="submenu megamenu">
+                                <li>
+                                    <ul>
+                                        <li><a href= {% url 'packages' %}>Package</a></li>
+                                        <li><a href={% url 'sightseeing' %}>Sightseeing</a></li>
+                                        <li><a href={% url 'hotels' %}>Hotel</a></li>
+                                        <li><a href={% url 'transport' %}>Transport</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- End navigation menu -->
+                </div>
+                <!-- end #navigation -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end navbar-custom -->
+    </header>
+    <!-- End Navigation Bar-->
+
