@@ -9,6 +9,7 @@ from django.db.models import Q
 from Useraccount.models import User
 from django.views import generic
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView,UpdateView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response 
 from .serializers import LeadModelSerializer, CustomerModelSerializer, SupplierModelSerializer, SightseeingModelSerializer
@@ -32,9 +33,11 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView , CreateView
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
+import uuid
+
 
 
 #################################### Front Display  #########################################
@@ -147,81 +150,719 @@ def leads(Request):
                                |Q(firstname=firstname)|Q(lastname=lastname)|Q(number=number)|Q(email=email)|Q(tags=tags))
             return render(Request, "leads.html", {'d1':d1,'data':data})
         return render(Request, "leads.html", {'d1':d1,'data':data})
+from django.db import transaction
+
+# def addleads(Request):
+#         d1 = User.objects.get(email = Request.user.email)
+#         if (Request.method == "POST"):
+#             customertype = Request.POST.get('customertype')
+#             number = Request.POST.get('number')
+#             email = Request.POST.get('email')
+#             salutation = Request.POST.get('salutation')
+#             firstname = Request.POST.get('firstname')
+#             lastname = Request.POST.get('lastname')
+#             address = Request.POST.get('address')
+#             city = Request.POST.get('city')
+#             alternatenumber = Request.POST.get('alternatenumber')
+#             alternateemail = Request.POST.get('alternateemail')
+#             leadsource = Request.POST.get('leadsource')
+#             priority = Request.POST.get('priority')
+#             status = Request.POST.get('status')
+#             adults = Request.POST.get('adults')
+#             child = Request.POST.get('child')
+#             infants = Request.POST.get('infants')
+#             tags = Request.POST.get('tags')
+#             triptype = Request.POST.get('triptype')
+#             assigned = Request.POST.get('assigned')
+#             created = Request.POST.get('setdate')
+#             flight_booking = bool(Request.POST.get('flight_booking', False))
+#             hotel_booking = bool(Request.POST.get('hotel_booking', False))
+#             visa = bool(Request.POST.get('visa', False))
+#             travel_insurance = bool(Request.POST.get('travel_insurance', False))
+#             forex = bool(Request.POST.get('forex', False))
+#             sightseeing = bool(Request.POST.get('sightseeing', False))
+#             transport = bool(Request.POST.get('transport', False))
+#             other = bool(Request.POST.get('other', False))
+#             package = bool(Request.POST.get('package', False))
+#             customized_package =bool (Request.POST.get('customized_package', False))
+#             bus = bool(Request.POST.get('bus', False))
+#             train = bool(Request.POST.get('train', False))
+#             passport = bool(Request.POST.get('passport', False))
+#             cruise = bool(Request.POST.get('cruise', False))
+#             adventure = bool(Request.POST.get('adventure', False))
+#             group = bool(Request.POST.get('group', False))
+#             # for flite
+            
+#             dep_from = Request.POST.getlist('flight_from')
+            
+#             dep_to = Request.POST.getlist('flight_to')
+#             departure = Request.POST.getlist('flight_departure')
+#             return_to = Request.POST.getlist('flight_return')
+#             classes = Request.POST.getlist('flight_class')
+#             domestic_flight = bool(Request.POST.getlist('category_domestic_flight'))
+#             internation_flight = bool(Request.POST.getlist('category_international_flight'))
+#             flexibility = Request.POST.getlist('flight_flexibity')
+#             preference = Request.POST.getlist('flight_preference')
+            
+#             #for hotel
+#             hcountry = Request.POST.getlist('country')
+#             hcity = Request.POST.getlist('city')
+#             roomtype = Request.POST.getlist('room')
+#             rating = Request.POST.getlist('rating')
+#             checkin = Request.POST.getlist('checkin')
+#             checkout = Request.POST.getlist('checkout')
+#             nights = Request.POST.getlist('night')
+#             budget = Request.POST.getlist('budget')
+#             Hotelname = Request.POST.getlist('hotelname')
+#             rooms = Request.POST.getlist('rooms')
+            
+#             #for visa
+#             country = Request.POST.getlist('country')
+#             visa_category = Request.POST.getlist('visa_category')
+#             visit_type = Request.POST.getlist('visit_type')
+#             duration = Request.POST.getlist('duration')
+#             traveldate = Request.POST.getlist('traveldate')
+#             job_profile = Request.POST.getlist('job_profile')
+#             age = Request.POST.getlist('age')
+#             qualification = Request.POST.getlist('qualification')
+#             description = Request.POST.getlist('description')
+            
+#             #for travel_insurance
+#             country = Request.POST.getlist('country')
+#             how_long = Request.POST.getlist('how_long')
+#             travel_date = Request.POST.getlist('travel_date')
+#             insurace = Request.POST.getlist('insurace')
+            
+#             #for forex
+#             currency = Request.POST.getlist('currency')
+#             amount = Request.POST.getlist('amount')
+            
+#             #for sightseen
+#             country = Request.POST.getlist('country')
+#             city = Request.POST.getlist('city')
+#             sightseen_options = Request.POST.getlist('sightseen_options')
+#             preference = Request.POST.getlist('preference')
+#             travel_date = Request.POST.getlist('travel_date')
+            
+#             #for transport
+#             country = Request.POST.getlist('country')
+#             city = Request.POST.getlist('city')
+#             trasport_date = Request.POST.getlist('trasport_date')
+#             drop_date = Request.POST.getlist('drop_date')
+#             preference = Request.POST.getlist('preference')
+#             Airport_transfers = bool(Request.POST.get('Airport_transfers'))
+#             Sightseeing_transfers = bool(Request.POST.get('Sightseeing_transfers'))
+#             Others = bool(Request.POST.get('Others'))
+            
+#             #for other
+#             country = Request.POST.getlist('country')
+#             travel_date = Request.POST.getlist('travel_date')
+#             no_of_days = Request.POST.getlist('no_of_days')
+#             sub_category = Request.POST.getlist('sub_category')
+#             description = Request.POST.getlist('description')
+            
+#             #for package
+#             country = Request.POST.getlist('country')
+#             travel_date = Request.POST.getlist('travel_date')
+#             budget = Request.POST.getlist('budget')
+#             package_name  = Request.POST.getlist('package_name ')
+#             extra_details  = Request.POST.getlist('extra_details ')
+            
+#             #for customized_package
+#             country = Request.POST.getlist('country')
+#             service = Request.POST.getlist('service')
+#             rating = Request.POST.getlist('rating')
+#             travel_date  = Request.POST.getlist('travel_date')
+#             no_of_night  = Request.POST.getlist('no_of_night')
+#             preferance  = Request.POST.getlist('preferance')
+#             flexibility = Request.POST.getlist('flexibility')
+#             no_of_rooms = Request.POST.getlist('no_of_rooms')
+#             rating = Request.POST.getlist('rating')
+#             budget  = Request.POST.getlist('budget')
+#             description  = Request.POST.getlist('description')
+            
+#             #for bus
+#             country = Request.POST.getlist('country')
+#             From = Request.POST.getlist('From')
+#             to = Request.POST.getlist('to')
+#             departure  = Request.POST.getlist('departure ')
+#             Return  = Request.POST.getlist('Return ')
+#             preference  = Request.POST.getlist('preference ')
+#             remark   = Request.POST.getlist('remark ')
+            
+#             #for train
+#             country = Request.POST.getlist('country')
+#             From = Request.POST.getlist('From')
+#             to = Request.POST.getlist('to')
+#             departure  = Request.POST.getlist('departure ')
+#             Return  = Request.POST.getlist('Return ')
+#             preference  = Request.POST.getlist('preference')
+#             remark  = Request.POST.getlist('remark ')
+            
+#             #for passport
+#             country = Request.POST.getlist('country')
+#             date = Request.POST.getlist('date')
+#             passport_no = Request.POST.getlist('passport_no')
+#             place_of_apply  = Request.POST.getlist('place_of_apply ')
+#             no_of_person  = Request.POST.getlist('no_of_person')
+#             new_passport = bool(Request.POST.get('new_passport'))
+#             renew_passport = bool(Request.POST.get('renew_passport'))
+#             urgent = bool(Request.POST.get('urgent'))
+#             remark  = Request.POST.getlist('remark ')
+            
+#             #for cruise
+#             country = Request.POST.getlist('country')
+#             City = Request.POST.getlist('City')
+#             days = Request.POST.getlist('days')
+#             Cruise_name  = Request.POST.getlist('Cruise_name ')
+#             type  = Request.POST.getlist('type ')
+#             departure = Request.POST.getlist('departure')
+#             Return = Request.POST.getlist('Return')
+#             room_type  = Request.POST.getlist('room_type ')
+#             remark  = Request.POST.getlist('remark ')
+            
+#             #for adventure
+#             country = Request.POST.getlist('country')
+#             city = Request.POST.getlist('city')
+#             travel_date = Request.POST.getlist('travel_date')
+#             motorbiking = bool(Request.POST.get('motorbiking'))
+#             camping = bool(Request.POST.get('camping'))
+#             safari = bool(Request.POST.get('safari'))
+#             water_sports = bool(Request.POST.get('water_sports'))
+#             remark  = Request.POST.getlist('remark ')
+           
+#             #for group
+#             country = Request.POST.getlist('country')
+#             package_name = Request.POST.getlist('package_name')
+#             preference = Request.POST.getlist('preference')
+#             remark  = Request.POST.getlist('remark ')
+                     
+#             data = Lead.objects.create(customertype=customertype, number=number, email=email, salutation=salutation, firstname=firstname, lastname=lastname, address=address,
+#                         city=city, alternatenumber=alternatenumber, alternateemail=alternateemail, leadsource=leadsource, priority=priority, status=status,
+#                         adults=adults, child=child, infants=infants, tags=tags,triptype=triptype, assigned=Request.user, created=created,flight_booking=flight_booking, hotel_booking=hotel_booking, visa=visa,
+#                        travel_insurance=travel_insurance,forex=forex,sightseeing=sightseeing,transport=transport,other=other,package=package,customized_package=customized_package,bus=bus,
+#                        train=train,passport=passport,cruise=cruise,adventure=adventure,group=group
+#                     )
+#             print(data.leadno)
+#             print(data)
+#             if data.flight_booking:
+#                 print(dep_from,dep_to)
+
+#                 for i in dep_from:
+                    
+#                     data1 = Flight_booking(leads=data,dep_from=i,dep_to=dep_to,departure=departure,return_to=return_to,
+#                                     classes=classes,domestic_flight=domestic_flight,internation_flight=internation_flight,
+#                                     flexibility=flexibility,preference=preference)
+#                     print(i)
+#                     data1.save()
+                    
+#                 #     data1 = Flight_booking(leads=data.leadno,dep_from=dep_from[i],dep_to=dep_to[i],departure=departure[i],return_to=return_to[i],
+#                 #                     classes=classes[i],domestic_flight=domestic_flight,internation_flight=internation_flight,
+#                 #                     flexibility=flexibility[i],preference=preference[i])
+#                 #     data1.save()
+                    
+#             if data.hotel_booking:
+#                 data2 = Hotel_booking(leads=data,hcountry=hcountry,hcity=hcity,roomtype=roomtype,rating=rating,checkin=checkin,
+#                                     checkout=checkout, nights=nights,budget=budget,Hotelname=Hotelname,rooms=rooms)
+#                 data2.save()
+                
+#             if data.visa:
+#                 data3 = Visa_booking(leads=data,country=country,visa_category=visa_category,visit_type=visit_type,duration=duration,traveldate=traveldate,
+#                                     job_profile=job_profile, age=age,qualification=qualification,description=description)
+#                 data3.save()
+                
+#             if data.travel_insurance:
+#                 data4 = Travel_insurance(leads=data,country=country,how_long=how_long,travel_date=travel_date,insurace=insurace)
+#                 data4.save()
+                
+#             if data.forex:
+#                 data5 = Forex(leads=data,currency=currency,amount=amount)
+#                 data5.save()
+                
+#             if data.sightseeing:
+#                 data6 = Sightseen(leads=data,country=country,city=city,sightseen_options=sightseen_options,preference=preference,travel_date=travel_date)
+#                 data6.save()
+                
+#             if data.transport:
+#                 data7 = Transport(leads=data,country=country,city=city,trasport_date=trasport_date,drop_date=drop_date,preference=preference,
+#                                     Airport_transfers=Airport_transfers, Sightseeing_transfers=Sightseeing_transfers,Others=Others)
+#                 data7.save()
+                
+#             if data.other:
+#                 data8 = Other(leads=data,country=country,travel_date=travel_date,no_of_days=no_of_days,sub_category=sub_category,description=description)
+#                 data8.save()
+                
+#             if data.package:
+#                 data9 = Packagee(leads=data,travel_date=travel_date,budget=budget,country=country,package_name=package_name,extra_details=extra_details)
+#                 data9.save()
+                
+#             if data.customized_package:
+#                 data10 = Customized_Package(leads=data,country=country,service=service,rating=rating,travel_date=travel_date,
+#                                     no_of_night=no_of_night, flexibility=flexibility,no_of_rooms=no_of_rooms,preferance=preferance,budget=budget,description=description,)
+#                 data10.save()
+                
+#             if data.bus:
+#                 data11 = Bus(leads=data,country=country,From=From,to=to,departure=departure,Return=Return,
+#                                     preference=preference, remark=remark)
+#                 data11.save()
+                
+#             if data.train:
+#                 data12 = Train(leads=data,country=country,From=From,to=to,departure=departure,Return=Return,
+#                                     preference=preference, remark=remark)
+#                 data12.save()
+                
+#             if data.passport:
+#                 data13 = Passport(leads=data,country=country,date=date,passport_no=passport_no,place_of_apply=place_of_apply,no_of_person=no_of_person,
+#                                     new_passport=new_passport, renew_passport=renew_passport,urgent=urgent, remark=remark)
+#                 data13.save()
+                
+#             if data.cruise:
+#                 data14 = Cruise(leads=data,country=country,City=City,days=days,Cruise_name=Cruise_name,type=type,
+#                                     departure=departure, Return=Return,room_type=room_type, remark=remark)
+#                 data14.save()
+                
+#             if data.adventure:
+#                 data15 = Adventure(leads=data,country=country,city=city,travel_date=travel_date,motorbiking=motorbiking,camping=camping,
+#                                     safari=safari,water_sports=water_sports,remark=remark)
+#                 data15.save()
+
+#             if data.group:
+#                 data16 = Group(leads=data,country=country,package_name=package_name,preference=preference,remark=remark)
+#                 data16.save()
+            
+#         return render(Request, "addleads.html",{'d1':d1})
+
+class LeadAddView(CreateView):
+    form_class = LeadForm
+    template_name = 'addlead.html'
+    success_url = '/leads/'
+    
+    
+def AddFlightBooking(request):
+    form = LeadFlightForm()
+    formset = FlightFormSet(queryset=Flight_booking.objects.none())
+
+    if request.method == 'POST':
+        formset = FlightFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            flight_instances = formset.save()
+            flight_ids = [flight_instance.id for flight_instance in flight_instances]
+            form = LeadFlightForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = FlightBooking.objects.filter().last()
+                m.flight.set(flight_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddFlightBooking.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddFlightBooking.html', {'form': form, "bird_formset": formset})
+
+def displayflightbooking(request):
+    bookings = FlightBooking.objects.select_related('leads').prefetch_related('flight')
+    return render(request, 'FlightBooking.html', {'bookings': bookings})
+
+def AddHotelBooking(request):
+    form = LeadHotelForm()
+    formset = HotelFormSet(queryset=Hotel_booking.objects.none())
+
+    if request.method == 'POST':
+        formset = HotelFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            hotel_instances = formset.save()
+            hotel_ids = [hotel_instance.id for hotel_instance in hotel_instances]
+            form = LeadHotelForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = HotelBooking.objects.filter().last()
+                m.hotel.set(hotel_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddHotelBooking.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddHotelBooking.html', {'form': form, "bird_formset": formset})
+
+def displayhotelbooking(request):
+    bookings = HotelBooking.objects.select_related('leads').prefetch_related('hotel')
+    return render(request, 'HotelBooking.html', {'bookings': bookings})
+
+def AddVisaBooking(request):
+    form = LeadVisaForm()
+    formset = VisaFormSet(queryset=Visa_booking.objects.none())
+
+    if request.method == 'POST':
+        formset = VisaFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            visa_instances = formset.save()
+            visa_ids = [visa_instance.id for visa_instance in visa_instances]
+            form = LeadVisaForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = VisaBooking.objects.filter().last()
+                m.visa.set(visa_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddVisaBooking.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddVisaBooking.html', {'form': form, "bird_formset": formset})
+
+def displayvisa(request):
+    bookings = VisaBooking.objects.select_related('leads').prefetch_related('visa')
+    return render(request, 'VisaBooking.html', {'bookings': bookings})
+
+def AddTravelInsurance(request):
+    form = LeadTravelForm()
+    formset = TravelFormSet(queryset=Travel_insurance.objects.none())
+
+    if request.method == 'POST':
+        formset = TravelFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            travel_instances = formset.save()
+            travel_ids = [travel_instance.id for travel_instance in travel_instances]
+            form = LeadTravelForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = TravelInsurance.objects.filter().last()
+                m.travel.set(travel_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddTravelInsurance.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddTravelInsurance.html', {'form': form, "bird_formset": formset})
+
+def displaytravelinsurance(request):
+    bookings = TravelInsurance.objects.select_related('leads').prefetch_related('travelinsurance')
+    return render(request, 'TravelInsurance.html', {'bookings': bookings})
+
+def AddForex(request):
+    form = LeadForexForm()
+    formset = ForexFormSet(queryset=Forex.objects.none())
+
+    if request.method == 'POST':
+        formset = ForexFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            forex_instances = formset.save()
+            forex_ids = [forex_instance.id for forex_instance in forex_instances]
+            form = LeadForexForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadForex.objects.filter().last()
+                m.forex.set(forex_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddForex.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddForex.html', {'form': form, "bird_formset": formset})
+
+def displayforex(request):
+    bookings = LeadForex.objects.select_related('leads').prefetch_related('forex')
+    return render(request, 'Forex.html', {'bookings': bookings})
+
+def AddSightseen(request):
+    form = LeadSightseenForm()
+    formset = SightseenFormSet(queryset=Sightseen.objects.none())
+
+    if request.method == 'POST':
+        formset = SightseenFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            sightseen_instances = formset.save()
+            sightseen_ids = [sightseen_instance.id for sightseen_instance in sightseen_instances]
+            form = LeadSightseenForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadSightseen.objects.filter().last()
+                m.sightseen.set(sightseen_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddSightseen.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddSightseen.html', {'form': form, "bird_formset": formset})
+
+def displaysightseen(request):
+    bookings = LeadSightseen.objects.select_related('leads').prefetch_related('sightseen')
+    return render(request, 'Sightseens.html', {'bookings': bookings})
+
+def AddTravel(request):
+    form = LeadTransportForm()
+    formset = TransportFormSet(queryset=Transport.objects.none())
+
+    if request.method == 'POST':
+        formset = TransportFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            transport_instances = formset.save()
+            transport_ids = [transport_instance.id for transport_instance in transport_instances]
+            form = LeadTransportForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadTransport.objects.filter().last()
+                m.transport.set(transport_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddTravel.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddTravel.html', {'form': form, "bird_formset": formset})
+
+def displaytravel(request):
+    bookings = LeadTransport.objects.select_related('leads').prefetch_related('transport')
+    return render(request, 'TransportBooking.html', {'bookings': bookings})
+
+def AddOther(request):
+    form = LeadOtherForm()
+    formset = OtherFormSet(queryset=Other.objects.none())
+
+    if request.method == 'POST':
+        formset = OtherFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            other_instances = formset.save()
+            other_ids = [other_instance.id for other_instance in other_instances]
+            form = LeadOtherForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadOther.objects.filter().last()
+                m.other.set(other_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddOther.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddOther.html', {'form': form, "bird_formset": formset})
+
+def displayother(request):
+    bookings = LeadOther.objects.select_related('leads').prefetch_related('other')
+    return render(request, 'Other.html', {'bookings': bookings})
+
+def AddPackagee(request):
+    form = LeadPackageForm()
+    formset = PackageeFormSet(queryset=Packagee.objects.none())
+
+    if request.method == 'POST':
+        formset = PackageeFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            package_instances = formset.save()
+            package_ids = [package_instance.id for package_instance in package_instances]
+            form = LeadPackageForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadPackage.objects.filter().last()
+                m.package.set(package_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddPackagee.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddPackagee.html', {'form': form, "bird_formset": formset})
+
+def displaypackage(request):
+    bookings = LeadPackage.objects.select_related('leads').prefetch_related('package')
+    return render(request, 'PackageBooking.html', {'bookings': bookings})
+
+def AddCustomizedPackage(request):
+    form = LeadCustomizedPackageForm()
+    formset = CustomizedPackageFormSet(queryset=Customized_Package.objects.none())
+
+    if request.method == 'POST':
+        formset = CustomizedPackageFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            customizedpackage_instances = formset.save()
+            customizedpackage_ids = [customizedpackage_instance.id for customizedpackage_instance in customizedpackage_instances]
+            form = LeadCustomizedPackageForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = CustomizedPackage.objects.filter().last()
+                m.customizedpackage.set(customizedpackage_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddCustomizedPackage.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddCustomizedPackage.html', {'form': form, "bird_formset": formset})
+
+def displaycustomizedpackage(request):
+    bookings = CustomizedPackage.objects.select_related('leads').prefetch_related('customizedpackage')
+    return render(request, 'CustomizedPacakge.html', {'bookings': bookings})
+
+def AddBus(request):
+    form = LeadBusForm()
+    formset = BusFormSet(queryset=Flight_booking.objects.none())
+
+    if request.method == 'POST':
+        formset = BusFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            bus_instances = formset.save()
+            bus_ids = [bus_instance.id for bus_instance in bus_instances]
+            form = LeadBusForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadBus.objects.filter().last()
+                m.bus.set(bus_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddBus.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddBus.html', {'form': form, "bird_formset": formset})
+
+def displaybus(request):
+    bookings = LeadBus.objects.select_related('leads').prefetch_related('bus')
+    return render(request, 'Bus.html', {'bookings': bookings})
+
+def AddTrain(request):
+    form = LeadTrainForm()
+    formset = TrainFormSet(queryset=Train.objects.none())
+
+    if request.method == 'POST':
+        formset = TrainFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            train_instances = formset.save()
+            train_ids = [train_instance.id for train_instance in train_instances]
+            form = LeadTrainForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadTrain.objects.filter().last()
+                m.train.set(train_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddTrain.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddTrain.html', {'form': form, "bird_formset": formset})
+
+def displayTrain(request):
+    bookings = LeadTrain.objects.select_related('leads').prefetch_related('train')
+    return render(request, 'Train.html', {'bookings': bookings})
+
+def AddPassport(request):
+    form = LeadPassportForm()
+    formset = PassportFormSet(queryset=Passport.objects.none())
+
+    if request.method == 'POST':
+        formset = PassportFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            passport_instances = formset.save()
+            passport_ids = [passport_instance.id for passport_instance in passport_instances]
+            form = LeadPassportForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadPassport.objects.filter().last()
+                m.passport.set(passport_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddPassport.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddPassport.html', {'form': form, "bird_formset": formset})
+
+def displayPassport(request):
+    bookings = LeadPassport.objects.select_related('leads').prefetch_related('passport')
+    return render(request, 'Passport.html', {'bookings': bookings})
+
+def AddCruise(request):
+    form = LeadCruiseForm()
+    formset = CruiseFormSet(queryset=Flight_booking.objects.none())
+
+    if request.method == 'POST':
+        formset = CruiseFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            cruise_instances = formset.save()
+            cruise_ids = [cruise_instance.id for cruise_instance in cruise_instances]
+            form = LeadCruiseForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadCruise.objects.filter().last()
+                m.cruise.set(cruise_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddCruise.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddCruise.html', {'form': form, "bird_formset": formset})
+
+def displayCruise(request):
+    bookings = LeadCruise.objects.select_related('leads').prefetch_related('cruise')
+    return render(request, 'Cruise.html', {'bookings': bookings})
+
+def AddAdventure(request):
+    form = LeadAdventureForm()
+    formset = AdventureFormSet(queryset=Adventure.objects.none())
+
+    if request.method == 'POST':
+        formset = AdventureFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            adventure_instances = formset.save()
+            adventure_ids = [adventure_instance.id for adventure_instance in adventure_instances]
+            form = LeadAdventureForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadAdventure.objects.filter().last()
+                m.adventure.set(adventure_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddAdventure.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddAdventure.html', {'form': form, "bird_formset": formset})
+
+def displayAdventure(request):
+    bookings = LeadAdventure.objects.select_related('leads').prefetch_related('adventure')
+    return render(request, 'Adventure.html', {'bookings': bookings})   
+
+def AddGroup(request):
+    form = LeadGroupForm()
+    formset = GroupFormSet(queryset=Group.objects.none())
+
+    if request.method == 'POST':
+        formset = GroupFormSet(request.POST, request.FILES)
+        if formset.is_valid():
+            group_instances = formset.save()
+            group_ids = [group_instance.id for group_instance in group_instances]
+            form = LeadGroupForm(request.POST, request.FILES)
+            if form.is_valid():
+                lead_instance = form.save(commit=False)
+                lead_instance.user = request.user
+                lead_instance.save()
+                m = LeadGroup.objects.filter().last()
+                m.group.set(group_ids)
+                return redirect('/leads/')  # Redirect to the leads page
+            else:
+                return render(request, 'AddGroup.html', {'form': form, "bird_formset": formset, 'error': form.errors})
+
+    return render(request, 'AddGroup.html', {'form': form, "bird_formset": formset})
+
+def displaygroup(request):
+    bookings = LeadGroup.objects.select_related('leads').prefetch_related('group')
+    return render(request, 'Group.html', {'bookings': bookings})   
 
 
-def addleads(Request):
-        
-        d1 = User.objects.get(email = Request.user.email)
-
-        if (Request.method == "POST"):
-            customertype = Request.POST.get('customertype')
-            number = Request.POST.get('number')
-            email = Request.POST.get('email')
-            salutation = Request.POST.get('salutation')
-            firstname = Request.POST.get('firstname')
-            lastname = Request.POST.get('lastname')
-            address = Request.POST.get('address')
-            city = Request.POST.get('city')
-            alternatenumber = Request.POST.get('alternatenumber')
-            alternateemail = Request.POST.get('alternateemail')
-            leadsource = Request.POST.get('leadsource')
-            priority = Request.POST.get('priority')
-            status = Request.POST.get('status')
-            adults = Request.POST.get('adults')
-            child = Request.POST.get('child')
-            infants = Request.POST.get('infants')
-            tags = Request.POST.get('tags')
-            triptype = Request.POST.get('triptype')
-            assigned = Request.POST.get('assigned')
-            created = Request.POST.get('setdate')
-            data = Lead(customertype=customertype, number=number, email=email, salutation=salutation, firstname=firstname, lastname=lastname, address=address,
-                        city=city, alternatenumber=alternatenumber, alternateemail=alternateemail, leadsource=leadsource, priority=priority, status=status,
-                        adults=adults, child=child, infants=infants, tags=tags,triptype=triptype, assigned=Request.user, created=created)
-
-            data.save()
-            subject = 'Your Lead is added. : Team Travvolt CRM'
-            message = "Hello,"+data.firstname +data.lastname + \
-                    "\nThanks to add lead with us\nNow You Can Manage Leads :Team Travvolt CRM"
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = [data.email, ]
-            send_mail(subject, message, email_from, recipient_list)
-        return render(Request, "addleads.html",{'d1':d1})
-
-
-
-
-def editleads(Request, id):
-    # d1 = User.objects.get(first_name=Request.user.first_name)
-    data = Lead.objects.get(id=id)
-    if (Request.method == "POST"):
-        data.customertype = Request.POST.get('customertype')
-        data.number = Request.POST.get('number')
-        data.email = Request.POST.get('email')
-        data.salutation = Request.POST.get('salutation')
-        data.firstname = Request.POST.get('firstname')
-        data.lastname = Request.POST.get('lastname')
-        data.address = Request.POST.get('address')
-        data.city = Request.POST.get('city')
-        data.alternatenumber = Request.POST.get('alternatenumber')
-        data.alternateemail = Request.POST.get('alternateemail')
-        data.leadsource = Request.POST.get('leadsource')
-        data.priority = Request.POST.get('priority')
-        data.status = Request.POST.get('status')
-        data.adults = Request.POST.get('adults')
-        data.child = Request.POST.get('child')
-        data.infants = Request.POST.get('infants')
-        data.tags = Request.POST.get('tags')
-        data.triptype = Request.POST.get('triptype')
-        data.destination = Request.POST.get('destination')
-        data.save()
-        subject = 'Your Lead is updated. : Team Travvolt CRM'
-        message = "Hello,"+data.firstname +data.lastname + \
-                "\nThanks to add lead with us\nNow You Can Manage Leads :Team Travvolt CRM"
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [data.email, ]
-        send_mail(subject, message, email_from, recipient_list)
-        return redirect("/leads")
-    return render(Request, "editleads.html", {"data": data })
+class LeadUpdateView(UpdateView):
+    template_name = 'editleads.html'
+    model = Lead
+    fields = ['customertype','number','email','salutation','firstname','lastname','address','city'
+              ,'alternatenumber','alternateemail','leadsource','priority','status','adults','child','infants'
+              ,'tags','triptype','assigned','destination','notes','flight_Booking','hotel_Booking','visa','travel_Insurance',
+              'forex','sightseeing','transport','other','package','customized_Package','bus','train','passport','cruise','adventure','group']
+    success_url ="/leads/"
 
 
 def delete(Request, id):
@@ -313,67 +954,24 @@ def contact(Request):
         return render(Request, "contact.html", {'data':data})
     return render(Request, "contact.html", {'data':data})
 
+class CustomerAddView(CreateView):
+    form_class = CustomerForm
+    template_name = 'addcustomer.html'
+    success_url = '/customer/'
+    
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
+
+class CustomerUpdateView(UpdateView):
+    template_name = 'editcustomer.html'
+    model = customer
+    fields = ['number','email','salutation','firstname','lastname','address','address2','city'
+              ,'pincode','alternateaddress','alternatemobile','alternateemail','source','customertype'
+              ,'accounthead','tags','flyer','food','pan','passport','enquirydate','issuedate']
+    success_url ="/customer/"
 
 
-
-def addcustomer(Request): 
-    if (Request.method == "POST"):
-        number = Request.POST.get('number')
-        email = Request.POST.get('email')
-        salutation = Request.POST.get('salutation')
-        firstname = Request.POST.get('firstname')
-        lastname = Request.POST.get('lastname')
-        address = Request.POST.get('address')
-        address2 = Request.POST.get('address2')
-        city = Request.POST.get('city')
-        pincode = Request.POST.get('pincode')
-        alternateaddress = Request.POST.get('alternateaddress')
-        alternatemobile = Request.POST.get('alternatenumber')
-        alternateemail = Request.POST.get('alternateemail')
-        source = Request.POST.get('source')
-        customertype = Request.POST.get('customertype')
-        accounthead = Request.POST.get('accounthead')
-        tags = Request.POST.get('tags')
-        flyer = Request.POST.get('flyer')
-        food = Request.POST.get('food')
-        pan = Request.POST.get('pan')
-        passport = Request.POST.get('passport')
-        enquirydate = Request.POST.get('enquirydate')
-        issuedate = Request.POST.get('issuedate')
-        
-        data = customer(user=Request.user,number=number, email=email, salutation=salutation, firstname=firstname, lastname=lastname, address=address, address2=address2, city=city,
-                        pincode=pincode, alternateaddress=alternateaddress, alternateemail=alternateemail, alternatemobile=alternatemobile, source=source,
-                        customertype=customertype, accounthead=accounthead, tags=tags, flyer=flyer, food=food, pan=pan, passport=passport, enquirydate=enquirydate, issuedate=issuedate)
-        data.save()
-
-    return render(Request, "addcustomer.html")
-
-def editcustomer(Request,id):
-    c = customer.objects.get(id=id)
-    if (Request.method == "POST"):
-        c.number = Request.POST.get('number')
-        c.email = Request.POST.get('email')
-        c.salutation = Request.POST.get('salutation')
-        c.firstname = Request.POST.get('firstname')
-        c.lastname = Request.POST.get('lastname')
-        c.address = Request.POST.get('address')
-        c.address2 = Request.POST.get('address2')
-        c.city = Request.POST.get('city')
-        c.pincode = Request.POST.get('pincode')
-        c.alternateaddress = Request.POST.get('alternateaddress')
-        c.alternatemobile = Request.POST.get('alternatenumber')
-        c.alternateemail = Request.POST.get('alternateemail')
-        c.source = Request.POST.get('source')
-        c.customertype = Request.POST.get('customertype')
-        c.accounthead = Request.POST.get('accounthead')
-        c.tags = Request.POST.get('tags')
-        c.flyer = Request.POST.get('flyer')
-        c.food = Request.POST.get('food')
-        c.pan = Request.POST.get('pan')
-        c.passport = Request.POST.get('passport')
-        c.save()
-        return redirect("/customer")
-    return render(Request,"editcustomer.html",{'c':c})
 
 def viewcustomer(Request,id):
     d = customer.objects.get(id=id)
@@ -396,20 +994,23 @@ def viewsupplier(Request,id):
     return render(Request, "viewsupplier.html", {"s": s})
 
 
-def addsupplier(request):
-    form = SupplierForm()
-    if request.method == 'POST':
-        form = SupplierForm(request.POST)
-        print("outerform")
-        if form.is_valid():
-            print('innerform',form)
-            instance = form.save(commit=False)
-            instance.user=request.user
-            instance.save()
-        else:
-            return render (request,'addsupplier.html', {'error': form.errors})
-    return render(request, 'addsupplier.html', {'form': form})
+class SupplierAddView(CreateView):
+    form_class = SupplierForm
+    template_name = 'addsupplier.html'
+    success_url = '/supplier/'
+    
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
 
+class SupplierUpdateView(UpdateView):
+    template_name = 'editsupplier.html'
+    model = supplier
+    fields = ['company_name','alias_name','gst_no','billing_address','city','visa','flights','hotel'
+              ,'travel_insurance','forex','sightseeing','cruise','transport','other','package','customize_package'
+              ,'bus','train','passport','adventure','group_package','country','tags','name','designation','number','email'
+              ,'alternate_number','alternate_email','preffered_supplier','inactive_supplier','default_email','cc_email','bank_details','note']
+    success_url ="/supplier/"
 
 ##################################### End Supplier ##############################################
 
@@ -429,53 +1030,21 @@ def sightseeing(Request):
             return render(Request,'sightseeing.html',{'sightseen':data})
     return render(Request,'sightseeing.html',{'sightseen':data})
 
-def addsightseeing(Request):
-    if Request.method == "POST":
-        id = Request.POST.get('id')
-        country = Request.POST.get('country')
-        city = Request.POST.get('city')
-        activity = Request.POST.get('activity')
-        description = Request.POST.get('description')
-        inclusion = Request.POST.get('inclusion')
-        exclusion = Request.POST.get('exclusion')
-        duration = Request.POST.get('duration')
-        closeday = Request.POST.get('closeday')
-        timings = Request.POST.get('timings')
-        transport = Request.POST.get('transport')
-        time = Request.POST.get('time')
-        remark = Request.POST.get('remark')
-        internalremark = Request.POST.get('internalremark')
-        externalremark = Request.POST.get('externalremark')
-        image = Request.FILES.get('image')
-        sightseen = Sightseeing(user=Request.user,id=id,country=country,city=city,activity=activity,description=description,inclusion=inclusion,
-                                exclusion=exclusion,duration=duration,closeday=closeday,timings=timings,
-                                transport=transport,time=time,remark=remark,internalremark=internalremark,
-                                externalremark=externalremark,image=image)
-        sightseen.save()
-    return render(Request,"addsightseeing.html")
+class SightseeingAddView(CreateView):
+    form_class = SightseeingForm
+    template_name = 'addsightseeing.html'
+    success_url = '/sightseeing/'
+    
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
 
-def editsightseeing(Request,id):
-    s = Sightseeing.objects.get(id=id)
-    if Request.method == "POST":
-        s.country = Request.POST.get('country')
-        s.city = Request.POST.get('city')
-        s.activity = Request.POST.get('activity')
-        s.description = Request.POST.get('description')
-        s.inclusion = Request.POST.get('inclusion')
-        s.exclusion = Request.POST.get('exclusion')
-        s.duration = Request.POST.get('duration')
-        s.closeday = Request.POST.get('closeday')
-        s.timings = Request.POST.get('timings')
-        s.transport = Request.POST.get('transport')
-        s.time = Request.POST.get('time')
-        s.remark = Request.POST.get('remark')
-        s.internalremark = Request.POST.get('internalremark')
-        s.externalremark = Request.POST.get('externalremark')
-        s.image = Request.FILES.get('image')
-        s.save()
-        return redirect("/sightseeing")
-    return render(Request,"editsightseeing.html",{'s':s})
-
+class SightseeingUpdateView(UpdateView):
+    template_name = 'editsightseeing.html'
+    model = Sightseeing
+    fields = ['country','city','activity','description','inclusion','exclusion','duration','close_day'
+              ,'timings','transport','time','remark','internal_remark','external_remark','image']
+    success_url ="/sightseeing/"
 
 def viewsightseeing(Request,id):
     s = Sightseeing.objects.get(id=id)
@@ -501,35 +1070,20 @@ def transport(Request):
     
     
     
-def addtransport(Request):
-    if Request.method=="POST":
-        id = Request.POST.get('id')
-        country = Request.POST.get('country')
-        city = Request.POST.get('city')
-        vehicletype = Request.POST.get('vehicletype')
-        title = Request.POST.get('title')
-        description = Request.POST.get('description')
-        internalremark = Request.POST.get('internalremark')
-        image = Request.FILES.get('image')
-        transport = Vehicle(user=Request.user,id=id,country=country,city=city,vehicletype=vehicletype,title=title,description=description,internalremark=internalremark,
-                            image=image)
-        transport.save()
-    return render(Request,"addtransport.html")
+class TransportAddView(CreateView):
+    form_class = VehicleForm
+    template_name = 'addtransport.html'
+    success_url = '/transport/'
+    
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
 
-
-def edittransport(Request,id):
-    t = Vehicle.objects.get(id=id)
-    if Request.method == "POST":
-        t.country = Request.POST.get('country')
-        t.city = Request.POST.get('city')
-        t.vehicletype = Request.POST.get('vehicletype')
-        t.title = Request.POST.get('title')
-        t.description = Request.POST.get('description')
-        t.internalremark = Request.POST.get('internalremark')
-        t.image = Request.FILES.get('image')
-        t.save()
-        return redirect("/transport")
-    return render(Request,"edittransport.html",{'t':t})
+class TransportUpdateView(UpdateView):
+    template_name = 'edittransport.html'
+    model = Vehicle
+    fields = ['country','city','vehicle_type','title','description','internal_remark','image']
+    success_url ="/transport/"
 
 def viewtransport(Request,id):
     t = Vehicle.objects.get(id=id)
@@ -557,7 +1111,7 @@ def packages(Request):
 def addpackages(request):
     form = PackageForm()
     formset = BirdFormSet(queryset=Destination.objects.none())
-    
+
     
     if request.method == 'POST':
         formset = BirdFormSet(request.POST)
@@ -622,14 +1176,14 @@ class GenerateInvoice(View):
         order_db = Package.objects.get(created_by=request.user.id,id=id)
 
         data = {
-            'Package_name': order_db.packagename,
+            'Package_name': order_db.package_name,
             'Country': order_db.country,
             'Destinations':order_db.destinations.all(),
             'Days':order_db.days,
             'Detailed_Itenerary':order_db.detailed_itenerary,
             'Hotel_Details':order_db.hotel_details,
             'Tags':order_db.tags,
-            'Meal_Type': order_db.mealtype,
+            'Meal_Type': order_db.meal_type,
             'Free_WiFi':order_db.free_wi_fi,
             'Airport_Transfers_Private':order_db.airport_transfers_private,
             'Airport_Transfers_SIC':order_db.airport_transfers_sic,
@@ -684,8 +1238,8 @@ def viewpackages(Request, id):
 class PackageUpdateView(UpdateView):
     template_name = 'editpackages.html'
     model = Package
-    fields = ['packagename','country','days','detailed_itenerary','hotel_details',
-              'tags','mealtype','free_wi_fi','airport_transfers_private','airport_transfers_sic',
+    fields = ['package_name','country','days','detailed_itenerary','hotel_details',
+              'tags','meal_type','free_wi_fi','airport_transfers_private','airport_transfers_sic',
               'travel_insurance','visa','Inter_hotel_transfer_private','sightseeing_transfer_private',
               'sightseeing_transfer_sic','Inter_hotel_transfer_sic','candlelight_dinner','bed_decorations',
               'honeymoon_cake','private_ferry','private_cruise','scuba_diving','parasailing','sea_walk',
@@ -714,55 +1268,25 @@ def hotels(Request):
         return render(Request, "hotels.html", {"h2": data})
     return render(Request, "hotels.html", {"h2": data})
 
+class HotelAddView(CreateView):
+    form_class = HotelForm
+    template_name = 'addhotels.html'
+    success_url = '/hotels/'
     
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
 
-def addhotels(Request):
-    if(Request.method == "POST"):
-        hotelname = Request.POST.get('hotelname')
-        country = Request.POST.get('country')
-        city = Request.POST.get('city')
-        address = Request.POST.get('address')
-        contact = Request.POST.get('contact')
-        email = Request.POST.get('email')
-        rate = Request.POST.get('rate')
-        htype = Request.POST.get('htype')
-        childfreeage = Request.POST.get('childfreeage')
-        childwithoutfreeage = Request.POST.get('childwithoutfreeage')
-        amenities = Request.POST.get('amenities')
-        description = Request.POST.get('description')
-        image = Request.FILES.get('image')
-        data = Hotel(user=Request.user,hotelname=hotelname, country=country, city=city, email=email, 
-                    address=address, contact=contact, rate=rate, htype=htype, 
-                    childfreeage=childfreeage, childwithoutfreeage=childwithoutfreeage, 
-                    amenities=amenities, description=description, image=image)
-
-        data.save()
-    return render(Request, "addhotels.html")
+class HotelUpdateView(UpdateView):
+    template_name = 'edithotels.html'
+    model = Hotel
+    fields = ['hotel_name','country','city','address','contact','email','rate','hotel_type'
+              ,'child_freeage','child_without_freeage','amenities','description','image']
+    success_url ="/hotels/"
 
 def viewhotels(Request,id): 
     data = Hotel.objects.get(id=id)
     return render(Request, "viewhotels.html", {"h1": data})
-
-def edithotels(Request, id):
-    data = Hotel.objects.get(id=id)
-    if (Request.method == "POST"):
-        data.hotelname = Request.POST.get('hotelname')
-        data.country = Request.POST.get('country')
-        data.city = Request.POST.get('city')
-        data.address = Request.POST.get('address')
-        data.contact = Request.POST.get('contact')
-        data.email = Request.POST.get('email')
-        data.rate = Request.POST.get('rate')
-        data.htype = Request.POST.get('htype')
-        data.childfreeage = Request.POST.get('childfreeage')
-        data.childwithoutfreeage = Request.POST.get('childwithoutfreeage')
-        data.amenities = Request.POST.get('amenities')
-        data.description = Request.POST.get('description')
-        data.image = Request.FILES.get('image')
-        data.save()
-        return redirect("/hotels")
-    return render(Request, "edithotels.html", {"data": data})
-
 
 ################################### End Hotel ##############################################
 

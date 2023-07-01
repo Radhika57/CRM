@@ -1,74 +1,11 @@
 {% load static %}
-<!-- <style>
-@media only screen and (max-width: 768px) {
-    .main-logo {
-   display: none;
+<style>
+    .submenu ul {
+      max-height: 300px; /* Set the maximum height of the list */
+      overflow-y: auto; /* Enable vertical scrolling */
     }
-    }
-</style>
-
-<div class="header navbar">
-    <div class="header-container">
-        <div class="nav-logo">
-            <a href="#">
-                <img src="{% static 'assets/img/tra.png' %}" width="70px",alt="Travolt"
-                    class="main-logo">
-                
-            </a>
-        </div>
-        <ul class="nav-left">
-           <li>
-                <a class="sidenav-fold-toggler" href="javascript:void(0);">
-                    <i class="mdi mdi-menu"></i>
-                </a>
-                <a class="sidenav-expand-toggler" href="javascript:void(0);">
-                    <i class="mdi mdi-menu"></i>
-                </a>
-            </li>
-        </ul>
-        <ul class="nav-right">
-
-            <li class="user-profile dropdown dropdown-animated scale-left">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                    <img class="profile-img img-fluid" src="{% static 'assets2/images/avatars/thumb-13.jpg' %}" alt="">
-                </a>
-                <ul class="dropdown-menu dropdown-md p-v-0">
-                    {% if request.user.is_authenticated %}
-                    <li>
-                        <ul class="list-media">
-                            <li class="list-item p-15">
-                                <div class="media-img">
-                                    <img src="{% static 'assets2/images/avatars/thumb-13.jpg' %}" alt="">
-                                </div>
-                                
-                                <div class="info">
-                                    <span class="title text-bold" style="font-size: large;">{{request.user.first_name}}</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    {% endif %}
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="/viewprofile/{{user.id}}">
-                            <i class="ti-user p-r-10"></i>
-                            <span>Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href={% url 'logout' %}>
-                            <i class="ti-power-off p-r-10"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-    </div>
-</div> -->
-
-
-
-
+  </style>
+<div class="header-bg">
     <!-- Navigation Bar-->
     <header id="topnav">
         <div class="topbar-main" style="background-color:#fa7070">
@@ -137,15 +74,40 @@
                         <li class="has-submenu">
                             <a href={% url 'dashboard' %}><i class="ti-home"></i> Dashboard</a>
                         </li>
-                        <li class="has-submenu">
+                        {% comment %} <li class="has-submenu">
                             <a href={% url 'leads' %}><i class="ti-folder"></i> Leads</a>
+                        </li> {% endcomment %}
+                        <li class="has-submenu">
+                            <a href="{% url 'leads' %}"><i class="ti-folder"></i> Leads <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                            <ul class="submenu megamenu">
+                                <li>
+                                    <ul>
+                                        <li><a href={% url 'display_flight_bookings' %}>Flight Booking</a></li>
+                                        <li><a href={% url 'display_hotel_bookings' %}>Hotel Booking</a></li>
+                                        <li><a href={% url 'display_visa_bookings' %}>Visa</a></li>
+                                        <li><a href={% url 'display_travelinsurance_bookings' %}>Travel Insurance</a></li>
+                                        <li><a href={% url 'display_forex_bookings' %}>Forex</a></li>
+                                        <li><a href={% url 'display_sightseen_bookings' %}>Sightseeing</a></li>
+                                        <li><a href={% url 'display_travel_bookings' %}>Transport</a></li>
+                                        <li><a href={% url 'display_other_bookings' %}>Other</a></li>
+                                        <li><a href={% url 'display_package_bookings' %}>Package</a></li>
+                                        <li><a href={% url 'display_customizedpackage_bookings' %}>Customized Package</a></li>
+                                        <li><a href={% url 'display_bus_bookings' %}>Bus</a></li>
+                                        <li><a href={% url 'display_Train_bookings' %}>Train</a></li>
+                                        <li><a href={% url 'display_Passport_bookings' %}>Passport</a></li>
+                                        <li><a href={% url 'display_Cruise_bookings' %}>Cruise</a></li>
+                                        <li><a href={% url 'display_Adventure_bookings' %}>Adventure</a></li>
+                                        <li><a href={% url 'display_group_bookings' %}>Group</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </li>
                         <li class="has-submenu">
                             <a href={% url 'user' %}><i class="ti-user"></i> Users</a>
                         </li>
 
                         <li class="has-submenu">
-                            <a ><i class="ti-briefcase"></i> Contact <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                            <a href="#"><i class="ti-briefcase"></i> Contact <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                             <ul class="submenu megamenu">
                                 <li>
                                     <ul>
@@ -157,7 +119,7 @@
                         </li>
 
                         <li class="has-submenu">
-                            <a><i class="ti-harddrives"></i> Manage <i class="mdi mdi-chevron-down mdi-drop"></i></a>
+                            <a href="#"><i class="ti-harddrives"></i> Manage <i class="mdi mdi-chevron-down mdi-drop"></i></a>
                             <ul class="submenu megamenu">
                                 <li>
                                     <ul>
@@ -178,5 +140,6 @@
         </div>
         <!-- end navbar-custom -->
     </header>
+</div>
     <!-- End Navigation Bar-->
 

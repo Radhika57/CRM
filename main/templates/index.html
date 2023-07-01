@@ -40,23 +40,21 @@
 
 </head>
 
-
-<div class="header-bg">
     <!-- Header START -->
     {% include 'header.html' %}
     <!-- Header END -->
-
+    
     <!-- Page Container START -->
-    <div class="page-container " style="margin-top:12%">
+    {% comment %} <div class="page-container " style="margin-top:12%"> {% endcomment %}
         {% block main-content %}{% endblock main-content %}
-    </div>
+    {% comment %} </div> {% endcomment %}
 
     <!-- Page Container END -->
 
     <!-- Footer START -->
     {% include 'footer1.html' %}
     <!-- Footer END -->
-</div>
+
 <!-- jQuery  -->
 <script src="{% static 'assets2/js/jquery.min.js' %}"></script>
 <script src="{% static 'assets2/js/bootstrap.bundle.min.js' %}"></script>
@@ -120,4 +118,4 @@
 <!-- page js -->
 <script src="{% static 'js/script.js' %}"></script>
 
-</html>
+</html> 

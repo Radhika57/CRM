@@ -19,17 +19,23 @@
     border-color: black;
 }
 
+@media (max-width: 767px) {
+        .col-md-4 img {
+          display: none;
+        }
+      }
+
 
 </style>
 
-<div class="main-content">
+<div class="wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="head d-flex">
-                            <div>
+                            <div class="icon_i">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                     class="bi bi-airplane" viewBox="0 0 16 16">
                                     <path
@@ -64,7 +70,7 @@
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-6">
-                                {{form.packagename|as_crispy_field}}
+                                {{form.package_name|as_crispy_field}}
                             </div>
                             <div class="col-md-6">
                                 {{form.country|as_crispy_field}}
@@ -102,11 +108,11 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div id="div_id_mealtype" class="mb-3">
-                                    <label for="id_mealtype" class="form-label requiredField">
+                                <div id="div_id_meal_type" class="mb-3">
+                                    <label for="id_meal_type" class="form-label requiredField">
                                         Mealtype<span class="asteriskField">*</span>
                                     </label>
-                                    <select name="mealtype" class="select form-select" id="id_mealtype" style="height:36px;">
+                                    <select name="meal_type" class="select form-select" id="id_meal_type" style="height:36px;">
                                         <option value="AP(Full Board)">AP(Full Board)</option>
 
                                         <option value="MAP(Half Board)">MAP(Half Board)</option>

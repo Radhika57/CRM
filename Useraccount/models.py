@@ -37,4 +37,3 @@ class User(AbstractUser):
     website = models.URLField(max_length=200,blank=True)
     is_internaluser = models.BooleanField(default=False)
     
- 

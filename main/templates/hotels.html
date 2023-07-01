@@ -3,14 +3,14 @@
 {% block main-content %}
 
 
-<div class="main-content">
+<div class="wrapper">
     <div class="container-fluid">
     <div class="row">
         <div class="col-md-4">
             <div class="row">
                 <div class="col-md-12">
                     <div class="head d-flex">
-                        <div>
+                        <div class="icon_i">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                 class="bi bi-house-door-fill" viewBox="0 0 16 16">
                                 <path
@@ -30,7 +30,7 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2" style="color:black;">
-            <button type="submit"><a href="{% url 'addhotels' %}"><i class="bi bi-person-plus"></i>Add
+            <button class="add_btn" type="submit"><a href="{% url 'addhotels' %}"><i class="bi bi-person-plus"></i>Add
                     Hotels</a></button>
         </div>
     </div>
@@ -327,7 +327,7 @@
                             <tbody>
                                 {% for hotel in h2 %}
                                 <tr>
-                                    <td>{{hotel.hotelname}}</td>
+                                    <td>{{hotel.hotel_name}}</td>
                                     <td>{{hotel.country}}</td>
                                     <td>{{hotel.city}}</td>
                                     <td>{{hotel.address}}</td>

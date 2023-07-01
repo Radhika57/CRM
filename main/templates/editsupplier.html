@@ -1,0 +1,341 @@
+{% extends 'index.html' %}
+{% load static %}
+{%load crispy_forms_tags %}
+{% block main-content %}
+
+<style>
+    .custom-field input {
+        line-height: 1px;
+        border: 1px solid black;
+    }
+
+    .custom-field select {
+        height: 36px;
+        width: 100%;
+        border: 1px solid black;
+    }
+    .custom-field textarea {
+        border: 1px solid black;
+    }
+
+    @media (max-width: 767px) {
+        .col-md-4 img {
+            display: none;
+        }
+    }
+</style>
+
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="head d-flex">
+                            <div class="icon_i">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                    class="bi bi-plugin" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1 8a7 7 0 1 1 2.898 5.673c-.167-.121-.216-.406-.002-.62l1.8-1.8a3.5 3.5 0 0 0 4.572-.328l1.414-1.415a.5.5 0 0 0 0-.707l-.707-.707 1.559-1.563a.5.5 0 1 0-.708-.706l-1.559 1.562-1.414-1.414 1.56-1.562a.5.5 0 1 0-.707-.706l-1.56 1.56-.707-.706a.5.5 0 0 0-.707 0L5.318 5.975a3.5 3.5 0 0 0-.328 4.571l-1.8 1.8c-.58.58-.62 1.6.121 2.137A8 8 0 1 0 0 8a.5.5 0 0 0 1 0Z" />
+                                </svg>
+                            </div>
+                            <div style="margin-left:5%">
+                                <h4 style="line-height: 0.5;">Edit Supplier</h4>
+                                <a>Edit Supplier Details.</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7"></div>
+            <div class="col-md-1">
+                <a href="{% url 'supplier' %}"><i class="bi bi-arrow-return-left">Back</i></a>
+            </div>
+        </div>
+        <div class="line">
+
+        </div>
+        <div>
+            <h4 style="font-size: 15px;"><b>Edit Supplier Information</b></h4>
+        </div>
+
+        <div class="line">
+
+        </div>
+        <div class="row">
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.company_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.alias_name|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.gst_no|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.billing_address|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.city|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <p>Deals In</p>
+                        <div class="row" style="color:black; margin-left:2px">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.visa|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.flights|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.hotel|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.travel_insurance|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.forex|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.sightseeing|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.transport|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.cruise|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.other|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.package|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.customize_package|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.bus|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.train|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.passport|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.adventure|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group custom-field">
+                                            {{ form.group_package|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="form-group custom-field">
+                                {{ form.country|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h4>Other Information</h4>
+                        <div class="line">
+
+                        </div>
+                        <div class="row" style="margin-left:1%;">
+                            <div class="col-md-6">
+                                <div class="form-group custom-field">
+                                    {{ form.tags|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" style="font-size:15px;color:black;margin-left:1%;margin-top:2%">
+                            <div class="col-md-4">
+                                <div class="form-group custom-field">
+                                    {{ form.preffered_supplier|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"
+                            style="font-size:15px;color:black;margin-left:1%;margin-top:1%;margin-bottom:2%;">
+                            <div class="col-md-4">
+                                <div class="form-group custom-field">
+                                    {{ form.inactive_supplier|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="div" style="margin-bottom:1%">
+                            <h4>Contact Information</h4>
+                            <div class="line">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+
+                                    <div class="form-group custom-field">
+                                        {{ form.name|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+
+
+                                    <div class="form-group custom-field">
+                                        {{ form.designation|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+
+
+                                    <div class="form-group custom-field">
+                                        {{ form.number|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group custom-field">
+                                        {{ form.email|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group custom-field">
+                                        {{ form.alternate_number|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group custom-field">
+                                        {{ form.alternate_email|as_crispy_field }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="font-size: 15px;margin-top:1%;color:black;">
+                                    <div class="form-group custom-field">
+                                        {{ form.default_email|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="font-size: 15px;margin-top:1%;color:black;">
+                                    <div class="form-group custom-field">
+                                        {{ form.cc_email|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4>Bank Information</h4>
+                            <div class="line">
+
+                            </div>
+                            <div class="row" style="margin-bottom: 1%;">
+                                <div class="col-md-12">
+                                    <div class="form-group custom-field">
+                                        {{ form.bank_details|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>Add Note</h4>
+                            <div class="line">
+
+                            </div>
+                            <div class="row" style="margin-bottom: 1%;">
+                                <div class="col-md-12">
+
+                                    <div class="form-group custom-field">
+                                        {{ form.note|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <img src="{% static 'assets2/images/supplier.png' %}" alt="supplier" srcset=""
+                            style="height:60%;width:120%;margin-top: 180px; margin-left: -70px; margin-right:10px;">
+                    </div>
+                </div>
+                <div class="line" style="margin-top: 15px;">
+
+                </div>
+                <div>
+                    <button type="submit" class="btn-block"> Update </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock main-content %}
